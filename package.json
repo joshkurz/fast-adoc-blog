@@ -1,0 +1,17 @@
+{
+  "name": "fast-adoc-blog",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "scripts": {
+    "dev": "ELEVENTY_ENV=development npx @11ty/eleventy --serve",
+    "build": "npx @11ty/eleventy",
+    "clean": "rm -rf _site"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "asciidoctor": "^3.0.3",
+    "eleventy-plugin-asciidoc": "^2.0.0",
+    "nunjucks": "^3.2.4"
+  }
+}

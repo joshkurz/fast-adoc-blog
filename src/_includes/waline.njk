@@ -1,0 +1,17 @@
+{% set w = siteConfig.waline %}
+<div class="comments" id="waline"></div>
+{% if not w.serverURL %}
+  <p><em>Waline needs a server URL. See <a href="/setup">/setup</a>.</em></p>
+{% else %}
+  <script src="https://unpkg.com/@waline/client@v3/dist/waline.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css"/>
+  <script>
+    Waline.init({
+      el: '#waline',
+      serverURL: '{{ w.serverURL }}',
+      reaction: true,
+      login: 'force',
+      pageview: true
+    });
+  </script>
+{% endif %}

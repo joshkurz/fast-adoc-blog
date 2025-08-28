@@ -1,0 +1,19 @@
+{% set g = siteConfig.giscus %}
+<div class="comments">
+  {% if not g.repo or not g.repoId or not g.categoryId %}
+    <p><em>Comments need setup. Go to <a href="/setup">/setup</a>.</em></p>
+  {% else %}
+    <script src="https://giscus.app/client.js"
+      data-repo="{{ g.repo }}"
+      data-repo-id="{{ g.repoId }}"
+      data-category="{{ g.category }}"
+      data-category-id="{{ g.categoryId }}"
+      data-mapping="{{ g.mapping or 'pathname' }}"
+      data-reactions-enabled="1"
+      data-input-position="bottom"
+      data-theme="{{ g.theme or 'light' }}"
+      data-lang="{{ g.lang or 'en' }}"
+      crossorigin="anonymous" async></script>
+    <noscript><em>Enable JavaScript to view comments</em></noscript>
+  {% endif %}
+</div>

@@ -1,0 +1,6 @@
+{% set cfg = siteConfig %}
+{% if cfg.commentsProvider == "giscus" %}
+  {% include "giscus.njk" %}
+{% elif cfg.commentsProvider == "waline" %}
+  {% include "waline.njk" %}
+{% endif %}

@@ -1,0 +1,13 @@
+= Hello, AsciiDoc
+:page-layout: post.njk
+:toc:
+
+Welcome to *fast-adoc-blog*! This is an `.adoc` post rendered by 11ty via Asciidoctor.
+
+== Why AsciiDoc?
+
+* Rich semantics and attributes
+* Includes, macros, and callouts
+* Plays great with CI/CD
+
+toc::[]
