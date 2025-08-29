@@ -1,18 +1,38 @@
 ---
+
 title: Home
 layout: base.njk
 pagination:
   data: collections.adoc
-  size: 10
+  size: 5
   alias: posts
 ---
 
+
+<h2>Posts</h2>
+<ul class="post-list">
+{% for post in posts %}
+  <li>
+    <a href="{{ post.url }}">{{ post.data.title }}</a>
+  <small>— {{ post.date }}</small>
+  </li>
+{% endfor %}
+</ul>
+
+<nav>
+  {% if pagination.href.previous %}
+    <a href="{{ pagination.href.previous }}">Previous</a>
+  {% endif %}
+  {% if pagination.href.next %}
+    <a href="{{ pagination.href.next }}">Next</a>
+  {% endif %}
+</nav>
 <h2>Posts</h2>
 <ul class="post-list">
 {% for post in posts | reverse %}
   <li>
     <a href="{{ post.url }}">{{ post.data.title }}</a>
-    <small>— {{ post.date | date("yyyy-LL-dd") }}</small>
+  <small>— {{ post.date }}</small>
   </li>
 {% endfor %}
 </ul>

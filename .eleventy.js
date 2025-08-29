@@ -7,6 +7,10 @@ export default function (eleventyConfig) {
     extensions: [".adoc"]
   });
   eleventyConfig.addPassthroughCopy({ "public": "/" });
+  // Custom collection for AsciiDoc posts
+  eleventyConfig.addCollection("adoc", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("src/posts/**/*.adoc");
+  });
   return {
     dir: { input: "src", includes: "_includes", output: "_site" },
     markdownTemplateEngine: "njk",
