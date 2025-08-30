@@ -1,10 +1,102 @@
-:root { line-height: 1.6; }
-body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; }
+:root {
+  line-height: 1.6;
+  /* GitHub-like default (light) */
+  --bg: #ffffff;
+  --text: #24292f;
+  --muted: #57606a;
+  --link: #0969da;
+  --border: #d0d7de;
+}
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
 .wrap { max-width: 800px; margin: 0 auto; padding: 1.25rem; }
 header h1 a { text-decoration: none; color: inherit; }
 .post h1 { margin-bottom: 0; }
-.meta { color: #666; margin-top: .25rem; }
+.meta { color: var(--muted); margin-top: .25rem; }
 .post-list { list-style: none; padding: 0; }
 .post-list li { margin: .5rem 0; }
+fieldset { border: 1px solid var(--border); }
 fieldset label { margin-right: 1rem; }
 input[type='text'], input[type='url'] { width: 100%; max-width: 520px; }
+
+/* Theme mappings to common giscus themes */
+/* Light family */
+[data-theme="light"],
+[data-theme="light_tritanopia"] {
+  --bg: #ffffff;
+  --text: #24292f;
+  --muted: #57606a;
+  --link: #0969da;
+  --border: #d0d7de;
+}
+
+/* Light high contrast */
+[data-theme="light_high_contrast"] {
+  --bg: #ffffff;
+  --text: #0e1116;
+  --muted: #343b43;
+  --link: #0349b4;
+  --border: #1f2328;
+}
+
+/* Dark family */
+[data-theme="dark"],
+[data-theme="dark_tritanopia"],
+[data-theme="transparent_dark"] {
+  --bg: #0d1117;
+  --text: #c9d1d9;
+  --muted: #8b949e;
+  --link: #58a6ff;
+  --border: #30363d;
+}
+
+/* Dark dimmed */
+[data-theme="dark_dimmed"],
+[data-theme="nolanlawson"] {
+  --bg: #22272e;
+  --text: #adbac7;
+  --muted: #768390;
+  --link: #539bf5;
+  --border: #3d444d;
+}
+
+/* Dark high contrast */
+[data-theme="dark_high_contrast"] {
+  --bg: #0a0c10;
+  --text: #f0f3f6;
+  --muted: #a5b1bb;
+  --link: #71b7ff;
+  --border: #7a828e;
+}
+
+/* Dark no-border (matches giscus noborder_dark) */
+[data-theme="noborder_dark"],
+[data-theme="dark_no_border"] {
+  --bg: #0d1117;
+  --text: #c9d1d9;
+  --muted: #8b949e;
+  --link: #58a6ff;
+  --border: transparent;
+}
+
+/* Follow OS color scheme when selected */
+[data-theme="preferred_color_scheme"] {
+  /* Light defaults already set in :root */
+}
+@media (prefers-color-scheme: dark) {
+  [data-theme="preferred_color_scheme"] {
+    --bg: #0d1117;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --link: #58a6ff;
+    --border: #30363d;
+  }
+}
+
+/* Links and borders */
+a { color: var(--link); }
+hr { border: 0; border-top: 1px solid var(--border); }

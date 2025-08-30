@@ -26,11 +26,11 @@ function render(){
 
     <div id="giscusFields" style="display:${cfg.commentsProvider==='giscus'?'block':'none'}">
       <h3>giscus</h3>
-      <p><small>Tip: generate values at giscus.app after enabling Discussions.</small></p>
-      <label>repo <input id="g_repo" value="${cfg.giscus.repo}"></label>
-      <label>repoId <input id="g_repoId" value="${cfg.giscus.repoId}"></label>
-      <label>category <input id="g_category" value="${cfg.giscus.category}"></label>
-      <label>categoryId <input id="g_categoryId" value="${cfg.giscus.categoryId}"></label>
+      <p><small>Paste the full <code>&lt;script ...&gt;</code> snippet from <a href="https://giscus.app" target="_blank" rel="noreferrer">giscus.app</a>. We’ll parse the required values.</small></p>
+      <label>
+        Paste giscus script
+        <textarea id="g_paste" rows="6" style="width:100%" placeholder="&lt;script src=\"https://giscus.app/client.js\" data-repo=\"...\" data-repo-id=\"...\" data-category=\"...\" data-category-id=\"...\" ... async&gt;&lt;/script&gt;"></textarea>
+      </label>
     </div>
 
     <div id="walineFields" style="display:${cfg.commentsProvider==='waline'?'block':'none'}">
@@ -54,13 +54,12 @@ function render(){
     })
   );
 
-  const ids = ["g_repo","g_repoId","g_category","g_categoryId","w_url"];
+  const ids = ["g_paste","w_url"];
   ids.forEach(id => {
     const node = document.getElementById(id);
     if (node) node.addEventListener("input", () => {
-      if (id.startsWith("g_")) {
-        const k = id.replace("g_","");
-        cfg.giscus[k] = node.value.trim();
+      if (id === "g_paste") {
+        parseGiscus(node.value);
       } else { cfg.waline.serverURL = node.value.trim(); }
       showPreview();
     });
@@ -114,4 +113,20 @@ function showPreview(){
   } else {
     preview.innerHTML = "<em>No provider selected.</em>";
   }
+}
+
+function parseGiscus(text){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = text;
+  const s = tmp.querySelector('script[src*="giscus.app/client.js"]');
+  if (!s) return;
+  const pick = (name) => s.getAttribute(name) || "";
+  const fromData = (k) => pick(`data-${k}`);
+  cfg.giscus.repo = fromData('repo');
+  cfg.giscus.repoId = fromData('repo-id');
+  cfg.giscus.category = fromData('category');
+  cfg.giscus.categoryId = fromData('category-id');
+  cfg.giscus.mapping = fromData('mapping') || cfg.giscus.mapping;
+  cfg.giscus.theme = fromData('theme') || cfg.giscus.theme;
+  cfg.giscus.lang = fromData('lang') || cfg.giscus.lang;
 }

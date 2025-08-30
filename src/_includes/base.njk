@@ -4,9 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>{{ title or "fast-adoc-blog" }}</title>
-  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="stylesheet" href="{{ '/styles.css' | asset }}"/>
 </head>
-<body>
+{% set gTheme = siteConfig.theme %}
+<body{% if gTheme %} data-theme="{{ gTheme }}"{% endif %}>
   <header class="wrap">
     <h1><a href="/">fast-adoc-blog</a></h1>
     <nav>

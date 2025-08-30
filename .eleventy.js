@@ -4,11 +4,43 @@ import path from "node:path";
 
 /** @type {import("@11ty/eleventy/src/UserConfig")} */
 export default function (eleventyConfig) {
+  // Cache-busting helper for static assets (based on file mtime)
+  const assetHelper = function(filePath) {
+    try {
+      const rel = String(filePath || "").replace(/^\//, "");
+      const abs = path.join(process.cwd(), "public", rel);
+      const stat = fs.statSync(abs);
+      const v = stat.mtime.getTime();
+      return `/${rel}?v=${v}`;
+    } catch {
+      // Fallback to the raw path if anything goes wrong
+      return filePath;
+    }
+  };
+  eleventyConfig.addShortcode("asset", assetHelper);
+  eleventyConfig.addFilter("asset", assetHelper);
+  // Ensure .adoc posts use the post layout and support :page-layout:
+  eleventyConfig.addGlobalData("eleventyComputed", {
+    layout: (data) => {
+      // Respect explicit layout if already set
+      if (data && data.layout) return data.layout;
+      // Map AsciiDoc attribute :page-layout: or :pageLayout:
+      const adocLayout = data && (data["page-layout"] || data.pageLayout);
+      if (adocLayout) return adocLayout;
+      // Default all files under src/posts/ to post.njk
+      const input = data && data.page && data.page.inputPath;
+      if (typeof input === "string" && input.includes("/src/posts/")) {
+        return "post.njk";
+      }
+      return data && data.layout;
+    }
+  });
   eleventyConfig.addPlugin(pluginAsciiDoc, {
     options: { safe: "unsafe", attributes: { "source-highlighter": "rouge", "sectanchors": true, "toc": "macro" } },
     extensions: [".adoc"]
   });
   eleventyConfig.addPassthroughCopy({ "public": "/" });
+  eleventyConfig.addWatchTarget("public");
   // Custom collection for AsciiDoc posts
   eleventyConfig.addCollection("adoc", function(collectionApi) {
     return collectionApi.getFilteredByGlob("src/posts/**/*.adoc");
