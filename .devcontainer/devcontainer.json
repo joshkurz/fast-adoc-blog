@@ -1,0 +1,12 @@
+{
+  "name": "fast-adoc-blog devcontainer",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "postCreateCommand": "apt-get update && apt-get install -y ruby-full build-essential && gem install --no-document asciidoctor",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "asciidoctor.asciidoctor-vscode"
+      ]
+    }
+  }
+}
