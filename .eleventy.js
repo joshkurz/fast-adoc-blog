@@ -158,6 +158,12 @@ export default function (eleventyConfig) {
       if (data) data._adocAttrs = attrs;
       return attrs?.image || attrs?.cover || attrs?.hero || attrs?.thumbnail;
     },
+    github: (data) => {
+      if (data && (data.github || data.gh || data.githubUsername)) return data.github || data.gh || data.githubUsername;
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      return attrs?.github || attrs?.gh || attrs?.github_username || attrs?.author_github;
+    },
     tags: (data) => {
       if (data && (Array.isArray(data.tags) || typeof data.tags === "string")) return data.tags;
       // Support AsciiDoc :page-tags: which AsciiDoc plugin maps into data as "page-tags"
