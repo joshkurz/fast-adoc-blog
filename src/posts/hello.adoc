@@ -1,18 +1,61 @@
-= Hello, AsciiDoc
+= Hello, AsciiDoc (Now With Dad Jokes)
 :page-layout: post.njk
 :toc:
-:author: Ada Lovelace
+:author: Ascii Dad
 :image: https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=1200&q=80&auto=format&fit=crop
-:description: A quick tour of using AsciiDoc with Eleventy in this starter.
+:description: A lighthearted hello to AsciiDoc, packed with gloriously groan-worthy dad jokes.
 :page-tags: intro, asciidoc
 :github: octocat
 
-Welcome to *fast-adoc-blog*! This is an `.adoc` post rendered by 11ty via Asciidoctor.
+Welcome to *fast-adoc-blog*! This is an `.adoc` post rendered by 11ty via Asciidoctor — now 37% funnier according to very serious science.
 
-== Why AsciiDoc?
+== Why AsciiDoc? (And why the puns?)
 
-* Rich semantics and attributes
-* Includes, macros, and callouts
-* Plays great with CI/CD
+* Rich semantics and attributes — because plain text deserves fancy clothes.
+* Includes, macros, and callouts — like cheat codes, but for docs.
+* Plays great with CI/CD — Continuous Integration? More like Continuous Illumination.
 
 toc::[]
+
+== AsciiDoc Dad Jokes Corner
+
+Here are some high-quality, low-latency dad jokes to keep your docs compiling with a smile:
+
+. Why did the developer switch to AsciiDoc?
+.. Because their Markdown was feeling a little… underlined.
+
+. How do AsciiDoc files stay so organized?
+.. They always keep their headers in order — it's a top-tier habit.
+
+. I asked my file if it supported callouts.
+.. It said "Sure, but only if you don't shout!" <1>
+
+. Why did the heading feel important?
+.. Because it was H1 and only child.
+
+. What do you call a well‑structured document?
+.. A docu-mint — fresh, readable, and leaves a good taste in your repo.
+
+[source,js]
+----
+// Even code blocks enjoy a good pun
+function asciify(text) {
+  return `*= ${text}`; // add a title, boom — instant drama
+}
+----
+
+[NOTE]
+====
+Remember: groans are an acceptable (and expected) reaction to dad jokes. If your terminal sighs, you're doing it right.
+====
+
+== Quick Tips to Get Rolling
+
+- Use attributes at the top (like `:author:`, `:image:`) to enrich your posts.
+- Add `:page-tags:` to help folks find related posts. +
+  Example: `:page-tags: intro, asciidoc`
+- Use `toc::[]` to drop in a table of contents when helpful.
+
+== Final Punchline
+
+Docs without humor are like code without comments — technically fine, but a little harder to love. Keep writing, keep shipping, and keep the puns compiling!
