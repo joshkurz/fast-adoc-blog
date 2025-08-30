@@ -4,6 +4,22 @@ import path from "node:path";
 
 /** @type {import("@11ty/eleventy/src/UserConfig")} */
 export default function (eleventyConfig) {
+  // Simple HTML -> text excerpt filter
+  eleventyConfig.addFilter("excerpt", function(content) {
+    if (!content) return "";
+    const text = String(content).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+    if (text.length <= 180) return text;
+    return text.slice(0, 180).trimEnd() + "…";
+  });
+  // Readable date
+  eleventyConfig.addFilter("readableDate", function(date) {
+    try {
+      const d = new Date(date);
+      return new Intl.DateTimeFormat("en", { year: "numeric", month: "short", day: "numeric" }).format(d);
+    } catch {
+      return String(date);
+    }
+  });
   // Cache-busting helper for static assets (based on file mtime)
   const assetHelper = function(filePath) {
     try {
