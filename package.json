@@ -7,6 +7,7 @@
     "dev": "ELEVENTY_ENV=development npx @11ty/eleventy --serve",
     "build": "npx @11ty/eleventy",
     "clean": "rm -rf _site",
+    "test": "node --test tests/*.mjs",
     "add_extensions": "apt-get update && apt-get install -y ruby-full build-essential && gem install --no-document asciidoctor"
   },
   "dependencies": {

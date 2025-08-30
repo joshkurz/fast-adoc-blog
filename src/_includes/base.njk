@@ -9,7 +9,10 @@
 <body>
   <header class="wrap">
     <h1><a href="/">fast-adoc-blog</a></h1>
-    <nav><a href="/">Home</a> · <a href="/setup">Setup</a></nav>
+    <nav>
+      <a href="/">Home</a>
+      {% if env.isLocal %} · <a href="/setup">Setup</a>{% endif %}
+    </nav>
   </header>
 
   <main class="wrap">
