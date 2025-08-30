@@ -1,5 +1,5 @@
 = fast-adoc-blog ⚡
-:toc: macro
+
 :icons: font
 :sectanchors:
 :source-highlighter: rouge
@@ -34,7 +34,7 @@
 
 A fast, zero-config blogging kit for https://asciidoc.org[AsciiDoc] lovers.
 Write in `.adoc` → push to GitHub → auto-deploy on https://vercel.com[Vercel].
-Includes an interactive `/setup` page to enable comments (giscus or Waline) and add future JavaScript features with ease.
+Includes an interactive `/setup` page (local dev only) to enable comments (giscus or Waline) and add future JavaScript features with ease.
 
 toc::[]
 
@@ -49,24 +49,57 @@ toc::[]
 
 == 🚀 Quick Start
 
-. *Fork this repo* and connect it to https://vercel.com[Vercel].
-.. Build command: `npm run build`
-.. Output dir: `_site`
-. *Write a post*: add `src/posts/hello.adoc`.
-. *Configure comments*:
-.. Visit `/setup` on your deployed site.
-.. Pick **giscus** (GitHub Discussions, no backend) or **Waline** (social logins, serverless backend).
-.. Click *Save* (preview locally or commit to repo if you’ve enabled the save API).
-. Done 🎉 — your blog is live at `https://<yoursite>.vercel.app`.
+Follow these steps to run the site locally and deploy to Vercel.
+
+. 1 — Install dependencies
+
+  ```bash
+  npm install
+  ```
+
+. 2 — Start the development server (live reload)
+
+  ```bash
+  npm run dev
+  ```
+
+  By default Eleventy serves the site at http://localhost:8080 — the port is printed in the terminal.
+
+. 3 — Build for production
+
+  ```bash
+  npm run build
+  ```
+
+  The static output is written to the `_site/` directory (the value used in `vercel.json`).
+
+. 4 — Clean build output
+
+  ```bash
+  npm run clean
+  ```
+
+. 5 — Write a post
+
+  Add `.adoc` files to `src/posts/` (example: `src/posts/hello.adoc`). Eleventy + Asciidoctor will render them to `_site/posts/`.
+
+. 6 — Configure comments (optional)
+
+  While running locally, visit `http://localhost:8080/setup` and choose **giscus** or **Waline**. The `/setup` page and the “Setup” nav link are available only in local dev. To save the generated `config.json` back to your repo from the Setup UI you’ll need environment variables (see notes below), otherwise copy the JSON and commit it.
+
+. 7 — Deploy to Vercel
+
+  - Connect your repository on https://vercel.com and set the build command to `npm run build` and the output directory to `_site`.
 
 [NOTE]
 ====
-The Setup page can save `config.json` back to your repo if you set:
+About `/setup`:
 
-* `VERCEL_GITHUB_TOKEN` (PAT with `repo` scope)
-* `GITHUB_REPO` (e.g., `youruser/fast-adoc-blog`)
-
-If you don’t set them, Setup still works in *preview mode* (stores in `localStorage`). You can copy the JSON and commit manually.
+* The `/setup` page is generated only in local dev (when running `npm run dev`). It does not exist on the deployed site.
+* To save `config.json` back to your repository from the Setup UI, set environment variables (in Vercel or your local shell):
+** `VERCEL_GITHUB_TOKEN` — a personal access token with `repo` scope
+** `GITHUB_REPO` — your repo slug, e.g., `youruser/fast-adoc-blog`
+* Without these, Setup still works in preview mode (stores config in `localStorage`). Copy the JSON it shows and commit it as `config.json` at the repo root.
 ====
 
 == 💬 Comments Options
@@ -74,7 +107,36 @@ If you don’t set them, Setup still works in *preview mode* (stores in `localSt
 * *giscus* → GitHub Discussions, no backend required.
 * *Waline* → Serverless backend (Vercel deploy), supports Google/GitHub/Twitter/Facebook logins.
 
-You can switch anytime at `/setup`.
+You can switch anytime using `/setup` locally, or by editing `config.json`.
+
+=== Enabling giscus (GitHub Discussions)
+
+To see giscus comments on posts:
+
+. Ensure your post uses the post layout so the comments block renders. At the top of each `.adoc` post include:
+  [source,adoc]
+  ----
+  = My Post Title
+  :page-layout: post.njk
+  ----
+. Enable Discussions on your GitHub repository.
+. Visit https://giscus.app and select your repo and a Discussions category. Copy the full script snippet they generate (the `<script src="https://giscus.app/client.js" ...></script>` block) and paste it into the local `/setup` page — it will parse and fill the required fields automatically.
+. Update `config.json` (automatically via Setup or manually) with:
+  - `commentsProvider`: `"giscus"`
+  - `giscus.repo`, `giscus.repoId`, `giscus.category`, `giscus.categoryId` (and optional `mapping`, `theme`, `lang`).
+. Build/run the site and open any post; the giscus widget appears at the bottom.
+
+Common gotchas:
+
+- If you paste an incomplete snippet (missing `src` or data attributes), no widget appears.
+- Category must exist in Discussions and be accessible publicly for public sites.
+- Ad blockers or third‑party script restrictions can hide the embed; check your browser console for errors.
+
+=== Enabling Waline
+
+- Deploy a Waline server (for example on Vercel) and copy its public URL.
+- In `config.json`, set `commentsProvider` to `"waline"` and set `waline.serverURL` to your deployed URL.
+- Build/run and open any post to see the Waline widget.
 
 == 🛠 Adding Custom Features
 

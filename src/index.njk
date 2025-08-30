@@ -1,18 +1,33 @@
 ---
+
 title: Home
 layout: base.njk
 pagination:
   data: collections.adoc
-  size: 10
+  size: 5
   alias: posts
 ---
+<section class="hero">
+  <div class="wrap">
+    <h2 class="title">Welcome</h2>
+    <p class="subtitle">Fast, clean posts rendered with AsciiDoc. Dive into the latest articles, tips, and notes.</p>
+  </div>
+</section>
 
-<h2>Posts</h2>
-<ul class="post-list">
-{% for post in posts | reverse %}
-  <li>
-    <a href="{{ post.url }}">{{ post.data.title }}</a>
-    <small>— {{ post.date | date("yyyy-LL-dd") }}</small>
-  </li>
-{% endfor %}
-</ul>
+<section class="wrap">
+  <div class="posts-grid">
+    {% for post in posts %}
+      {% include "post-card.njk" %}
+    {% endfor %}
+  </div>
+
+  <nav style="margin-top:1rem;">
+    {% if pagination.href.previous %}
+      <a href="{{ pagination.href.previous }}">Newer posts</a>
+    {% endif %}
+    {% if pagination.href.next %}
+      {% if pagination.href.previous %} · {% endif %}
+      <a href="{{ pagination.href.next }}">Older posts</a>
+    {% endif %}
+  </nav>
+</section>

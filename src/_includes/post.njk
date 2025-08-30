@@ -1,9 +1,33 @@
-{% extends "base.njk" %}
-{% block content %}
+---
+layout: base.njk
+---
 <article class="post">
+  {% if image %}
+    <img class="post-cover" src="{{ image }}" alt="">
+  {% endif %}
   <h1>{{ title }}</h1>
-  <p class="meta">{{ date | date("yyyy-LL-dd") }}</p>
+  <p class="meta">{{ page.date | readableDate }}{% if content %} · {{ content | readingTime }}{% endif %}</p>
+  {% if author %}
+    {% set a = authors and authors[author] %}
+    {% set gh = github or (a and (a.github or a.gh or a.githubUsername)) %}
+    {% set avatarUrl = a and a.avatar or (gh and 'https://github.com/' ~ gh ~ '.png') %}
+    {% set profileUrl = a and a.url or (gh and 'https://github.com/' ~ gh) %}
+    <div class="byline">
+      {% if avatarUrl %}<img src="{{ avatarUrl }}" alt="{{ author }}">{% endif %}
+      <div class="who">
+        {% if profileUrl %}<a href="{{ profileUrl }}">{{ author }}</a>{% else %}{{ author }}{% endif %}
+        {% if a and a.bio %}<small>{{ a.bio }}</small>{% endif %}
+      </div>
+    </div>
+  {% endif %}
+  {% if description %}<p class="meta" style="margin-top:0">{{ description }}</p>{% endif %}
   {{ content | safe }}
+  {% if tags %}
+    <p class="tags">
+      {% for t in (tags | array) %}
+        <a class="tag" href="/tags/{{ t | slug }}/">#{{ t }}</a>
+      {% endfor %}
+    </p>
+  {% endif %}
   {% include "comments.njk" %}
 </article>
-{% endblock %}

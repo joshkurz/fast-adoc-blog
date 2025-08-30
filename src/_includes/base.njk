@@ -4,20 +4,32 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>{{ title or "fast-adoc-blog" }}</title>
-  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="stylesheet" href="{{ '/styles.css' | asset }}"/>
 </head>
-<body>
-  <header class="wrap">
-    <h1><a href="/">fast-adoc-blog</a></h1>
-    <nav><a href="/">Home</a> · <a href="/setup">Setup</a></nav>
+{% set gTheme = siteConfig.theme %}
+{% set navRepoUrl = siteConfig.repoUrl %}
+<body{% if gTheme %} data-theme="{{ gTheme }}"{% endif %}>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">fast-adoc-blog</a>
+      <nav class="site-nav">
+        {% set current = page and page.url or '' %}
+        {% set isHome = current == '/' %}
+        {% set isTags = current and current.startsWith('/tags/') %}
+        {% set isSetup = current == '/setup/' %}
+
+        <a href="/"{% if isHome %} class="active" aria-current="page"{% endif %}>Home</a>
+        <a href="/tags/"{% if isTags %} class="active" aria-current="page"{% endif %}>Tags</a>
+        {% if navRepoUrl %}<a href="{{ navRepoUrl }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+        {% if env.isLocal %}<a href="/setup"{% if isSetup %} class="active" aria-current="page"{% endif %}>Setup</a>{% endif %}
+      </nav>
+    </div>
   </header>
 
   <main class="wrap">
     {{ content | safe }}
   </main>
 
-  <footer class="wrap">
-    <small>Built with 11ty + AsciiDoc · Comments by giscus/Waline</small>
-  </footer>
+  {% include "footer.njk" %}
 </body>
 </html>

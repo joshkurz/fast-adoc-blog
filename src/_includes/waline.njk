@@ -1,7 +1,10 @@
 {% set w = siteConfig.waline %}
 <div class="comments" id="waline"></div>
 {% if not w.serverURL %}
-  <p><em>Waline needs a server URL. See <a href="/setup">/setup</a>.</em></p>
+  <p><em>
+    Waline needs a server URL.
+    {% if env.isLocal %}See <a href="/setup">/setup</a>.{% else %}Run locally and visit <code>/setup</code>.{% endif %}
+  </em></p>
 {% else %}
   <script src="https://unpkg.com/@waline/client@v3/dist/waline.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css"/>

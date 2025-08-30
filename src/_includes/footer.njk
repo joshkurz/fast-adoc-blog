@@ -1,0 +1,15 @@
+{% set repoUrl = siteConfig.repoUrl %}
+{% if not repoUrl and siteConfig.giscus and siteConfig.giscus.repo %}
+  {% set repoUrl = 'https://github.com/' ~ siteConfig.giscus.repo %}
+{% endif %}
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <small>Built with 11ty + AsciiDoc · Comments by giscus</small>
+    {% if repoUrl %}
+      <a class="footer-cta" href="{{ repoUrl }}" target="_blank" rel="noopener">Contribute on GitHub</a>
+    {% endif %}
+  </div>
+  
+</footer>
+

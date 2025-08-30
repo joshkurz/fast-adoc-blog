@@ -1,0 +1,21 @@
+---
+title: Tags
+layout: base.njk
+pagination:
+  data: collections.tagList
+  size: 1
+  alias: tag
+permalink: /tags/{{ tag | slug }}/
+---
+
+<h2>#{{ tag }}</h2>
+<section class="wrap">
+  <div class="posts-grid">
+  {% for post in collections.adoc %}
+    {% set t = post | tagsFor %}
+    {% if t and (tag in t) %}
+      {% include "post-card.njk" %}
+    {% endif %}
+  {% endfor %}
+  </div>
+</section>
