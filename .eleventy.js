@@ -57,6 +57,59 @@ export default function (eleventyConfig) {
     const minutes = Math.max(1, Math.ceil(words / 200));
     return `${minutes} min read`;
   });
+  // Slug util for tags/urls
+  eleventyConfig.addFilter("slug", function(str) {
+    return String(str || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  });
+  // Unique tag list collection (excluding utility tags)
+  eleventyConfig.addFilter("tagsFor", function(item) {
+    if (!item) return [];
+    const d = item.data || {};
+    let tags = d.tags;
+    if (!tags) {
+      const pt = d["page-tags"] || d.pageTags;
+      if (pt) tags = pt;
+    }
+    if (!tags) {
+      const attrs = readAdocAttrs(d);
+      const raw = attrs && (attrs.tags || attrs.tag || attrs["page-tags"] || attrs.pageTags);
+      if (raw) tags = String(raw).split(",");
+    }
+    const arr = Array.isArray(tags) ? tags : (tags ? [String(tags)] : []);
+    return arr.map(s => String(s).trim()).filter(Boolean);
+  });
+  eleventyConfig.addFilter("hasTag", function(item, tag) {
+    if (!item || !tag) return false;
+    const d = item.data || {};
+    let tags = d.tags || d["page-tags"] || d.pageTags;
+    if (!tags) {
+      const attrs = readAdocAttrs(d);
+      const raw = attrs && (attrs.tags || attrs.tag);
+      if (raw) tags = String(raw).split(",");
+    }
+    const arr = Array.isArray(tags) ? tags : (tags ? [String(tags)] : []);
+    return arr.map(s => String(s).trim()).includes(String(tag));
+  });
+  eleventyConfig.addCollection("tagList", function(collectionApi) {
+    const set = new Set();
+    collectionApi.getAll().forEach(item => {
+      const d = item.data || {};
+      let tags = d.tags || d["page-tags"] || d.pageTags;
+      if (!tags) {
+        const attrs = readAdocAttrs(d);
+        const raw = attrs && (attrs.tags || attrs.tag || attrs["page-tags"] || attrs.pageTags);
+        if (raw) tags = String(raw).split(",");
+      }
+      const arr = Array.isArray(tags) ? tags : (tags ? [String(tags)] : []);
+      arr.map(s => String(s).trim()).filter(Boolean).forEach(t => set.add(t));
+    });
+    ["all", "adoc"].forEach(t => set.delete(t));
+    return Array.from(set).sort();
+  });
+  // Map AsciiDoc :tags: (comma-separated) into array handled below in eleventyComputed
   // Cache-busting helper for static assets (based on file mtime)
   const assetHelper = function(filePath) {
     try {
@@ -104,6 +157,20 @@ export default function (eleventyConfig) {
       const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
       if (data) data._adocAttrs = attrs;
       return attrs?.image || attrs?.cover || attrs?.hero || attrs?.thumbnail;
+    },
+    tags: (data) => {
+      if (data && (Array.isArray(data.tags) || typeof data.tags === "string")) return data.tags;
+      // Support AsciiDoc :page-tags: which AsciiDoc plugin maps into data as "page-tags"
+      const pageTags = data && (data["page-tags"] || data.pageTags);
+      if (pageTags) {
+        const arr = Array.isArray(pageTags) ? pageTags : String(pageTags).split(",");
+        return arr.map(s => String(s).trim()).filter(Boolean);
+      }
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      const raw = attrs && (attrs.tags || attrs.tag);
+      if (!raw) return data && data.tags;
+      return String(raw).split(",").map(s => s.trim()).filter(Boolean);
     }
   });
   eleventyConfig.addPlugin(pluginAsciiDoc, {

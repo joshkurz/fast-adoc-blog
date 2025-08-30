@@ -1,0 +1,22 @@
+---
+title: Tags
+layout: base.njk
+pagination:
+  data: collections.tagList
+  size: 1
+  alias: tag
+permalink: /tags/{{ tag | slug }}/
+---
+
+<h2>#{{ tag }}</h2>
+<ul class="post-list">
+{% set items = [] %}
+{% for post in collections.adoc %}
+  {% if post | hasTag(tag) %}
+  <li>
+    <a href="{{ post.url }}">{{ post.data.title }}</a>
+    <small>— {{ post.date | readableDate }}</small>
+  </li>
+  {% endif %}
+{% endfor %}
+</ul>

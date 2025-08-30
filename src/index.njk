@@ -28,6 +28,14 @@ pagination:
           <h3><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
           <p class="card-meta">{{ post.date | readableDate }}{% if author %} · {{ author }}{% endif %} · {{ post.templateContent | readingTime }}</p>
           <p class="card-excerpt">{{ desc }}</p>
+          {% set list = post | tagsFor %}
+          {% if list and list.length %}
+            <p class="tags">
+            {% for t in list %}
+              <a class="tag" href="/tags/{{ t | slug }}/">#{{ t }}</a>
+            {% endfor %}
+            </p>
+          {% endif %}
           <a class="card-cta" href="{{ post.url }}">Read more →</a>
         </div>
       </article>

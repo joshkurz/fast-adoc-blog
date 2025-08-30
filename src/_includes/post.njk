@@ -6,8 +6,25 @@ layout: base.njk
     <img class="post-cover" src="{{ image }}" alt="">
   {% endif %}
   <h1>{{ title }}</h1>
-  <p class="meta">{{ page.date | readableDate }}{% if author %} · {{ author }}{% endif %}{% if content %} · {{ content | readingTime }}{% endif %}</p>
+  <p class="meta">{{ page.date | readableDate }}{% if content %} · {{ content | readingTime }}{% endif %}</p>
+  {% if author %}
+    {% set a = authors and authors[author] %}
+    <div class="byline">
+      {% if a and a.avatar %}<img src="{{ a.avatar }}" alt="{{ author }}">{% endif %}
+      <div class="who">
+        {% if a and a.url %}<a href="{{ a.url }}">{{ author }}</a>{% else %}{{ author }}{% endif %}
+        {% if a and a.bio %}<small>{{ a.bio }}</small>{% endif %}
+      </div>
+    </div>
+  {% endif %}
   {% if description %}<p class="meta" style="margin-top:0">{{ description }}</p>{% endif %}
   {{ content | safe }}
+  {% if tags %}
+    <p class="tags">
+      {% for t in (tags | array) %}
+        <a class="tag" href="/tags/{{ t | slug }}/">#{{ t }}</a>
+      {% endfor %}
+    </p>
+  {% endif %}
   {% include "comments.njk" %}
 </article>

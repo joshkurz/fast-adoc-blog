@@ -1,0 +1,22 @@
+{
+  "commentsProvider": "giscus",
+  "giscus": {
+    "repo": "joshkurz/fast-adoc-blog",
+    "repoId": "R_kgDOPlfklw",
+    "category": "General",
+    "categoryId": "DIC_kwDOPlfkl84Cuwen",
+    "mapping": "pathname",
+    "theme": "noborder_dark",
+    "lang": "en"
+  },
+  "waline": {
+    "serverURL": ""
+  },
+  "authors": {
+    "Ada Lovelace": {
+      "avatar": "https://avatars.githubusercontent.com/u/583231?v=4",
+      "url": "https://example.com/authors/ada",
+      "bio": "Mathematician and writer; early computing pioneer."
+    }
+  }
+}
