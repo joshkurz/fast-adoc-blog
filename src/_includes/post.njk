@@ -1,9 +1,13 @@
-{% extends "base.njk" %}
-{% block content %}
+---
+layout: base.njk
+---
 <article class="post">
+  {% if image %}
+    <img class="post-cover" src="{{ image }}" alt="">
+  {% endif %}
   <h1>{{ title }}</h1>
-  <p class="meta">{{ date | date("yyyy-LL-dd") }}</p>
+  <p class="meta">{{ page.date | readableDate }}{% if author %} · {{ author }}{% endif %}{% if content %} · {{ content | readingTime }}{% endif %}</p>
+  {% if description %}<p class="meta" style="margin-top:0">{{ description }}</p>{% endif %}
   {{ content | safe }}
   {% include "comments.njk" %}
 </article>
-{% endblock %}

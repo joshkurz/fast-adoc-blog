@@ -49,6 +49,14 @@ export default function (eleventyConfig) {
       return String(date);
     }
   });
+  // Reading time in minutes (approx 200 wpm)
+  eleventyConfig.addFilter("readingTime", function(content) {
+    if (!content) return "";
+    const text = String(content).replace(/<[^>]*>/g, " ");
+    const words = (text.match(/\S+/g) || []).length;
+    const minutes = Math.max(1, Math.ceil(words / 200));
+    return `${minutes} min read`;
+  });
   // Cache-busting helper for static assets (based on file mtime)
   const assetHelper = function(filePath) {
     try {
