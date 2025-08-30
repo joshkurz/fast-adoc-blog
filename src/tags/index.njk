@@ -1,0 +1,28 @@
+---
+title: Tags
+layout: base.njk
+permalink: /tags/
+---
+
+<h2>Tags</h2>
+<ul class="post-list">
+{% for tag in collections.tagList %}
+  {% set items = collections[tag] %}
+  {% if not items %}
+    {% set count = 0 %}
+    {% for post in collections.adoc %}
+      {% set t = post | tagsFor %}
+      {% if t and (tag in t) %}
+        {% set count = count + 1 %}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    {% set count = items | length %}
+  {% endif %}
+  <li>
+    <a class="tag" href="/tags/{{ tag | slug }}/">#{{ tag }}</a>
+    <small>× {{ count }}</small>
+  </li>
+{% endfor %}
+</ul>
+
