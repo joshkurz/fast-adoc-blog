@@ -1,5 +1,5 @@
 = fast-adoc-blog ⚡
-:toc: macro
+
 :icons: font
 :sectanchors:
 :source-highlighter: rouge
@@ -49,15 +49,57 @@ toc::[]
 
 == 🚀 Quick Start
 
-. *Fork this repo* and connect it to https://vercel.com[Vercel].
-.. Build command: `npm run build`
-.. Output dir: `_site`
-. *Write a post*: add `src/posts/hello.adoc`.
-. *Configure comments*:
-.. Visit `/setup` on your deployed site.
-.. Pick **giscus** (GitHub Discussions, no backend) or **Waline** (social logins, serverless backend).
-.. Click *Save* (preview locally or commit to repo if you’ve enabled the save API).
-. Done 🎉 — your blog is live at `https://<yoursite>.vercel.app`.
+Follow these steps to run the site locally and deploy to Vercel.
+
+. 1 — Install dependencies
+
+  ```bash
+  npm install
+  ```
+
+. 2 — Start the development server (live reload)
+
+  ```bash
+  npm run dev
+  ```
+
+  By default Eleventy serves the site at http://localhost:8080 — the port is printed in the terminal.
+
+. 3 — Build for production
+
+  ```bash
+  npm run build
+  ```
+
+  The static output is written to the `_site/` directory (the value used in `vercel.json`).
+
+. 4 — Clean build output
+
+  ```bash
+  npm run clean
+  ```
+
+. 5 — Write a post
+
+  Add `.adoc` files to `src/posts/` (example: `src/posts/hello.adoc`). Eleventy + Asciidoctor will render them to `_site/posts/`.
+
+. 6 — Configure comments (optional)
+
+  Visit `/setup` on your deployed site and choose **giscus** or **Waline**. To allow the Setup UI to write `config.json` back to your repo you'll need to set environment variables (see notes below).
+
+. 7 — Deploy to Vercel
+
+  - Connect your repository on https://vercel.com and set the build command to `npm run build` and the output directory to `_site`.
+
+[NOTE]
+====
+To enable the Setup page to save the generated `config.json` back to your repository you must set the following environment variables in Vercel (or locally for testing):
+
+* `VERCEL_GITHUB_TOKEN` — a personal access token with `repo` scope
+* `GITHUB_REPO` — the repo slug, for example `youruser/fast-adoc-blog`
+
+If you don't set them, the Setup UI still works in preview mode (it stores the config in `localStorage`) and you can copy & commit the JSON manually.
+====
 
 [NOTE]
 ====
