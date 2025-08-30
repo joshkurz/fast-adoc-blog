@@ -20,7 +20,8 @@ header h1 a { text-decoration: none; color: inherit; }
 .brand { font-weight: 700; text-decoration: none; color: inherit; font-size: 1.15rem; }
 .site-nav { display: flex; gap: .5rem; }
 .site-nav a { text-decoration: none; color: inherit; padding: .35rem .6rem; border-radius: 999px; border: 1px solid transparent; }
-.site-nav a:hover { border-color: var(--border); }
+.site-nav a:hover { border-color: var(--text); }
+.site-nav a.active, .site-nav a[aria-current="page"] { border-color: var(--text); font-weight: 600; }
 .post h1 { margin-bottom: 0; }
 .meta { color: var(--muted); margin-top: .25rem; }
 .post-cover { width: 100%; max-height: 360px; object-fit: cover; border-radius: 8px; margin: 0 0 .75rem; display: block; }
@@ -154,3 +155,9 @@ hr { border: 0; border-top: 1px solid var(--border); }
 .byline .who { font-size: .95rem; }
 .byline .who a { color: inherit; text-decoration: none; }
 .byline .who small { color: var(--muted); display: block; }
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--border); margin-top: 2rem; }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.footer-cta { text-decoration: none; color: inherit; border: 1px solid var(--border); padding: .35rem .75rem; border-radius: 999px; font-weight: 600; }
+.footer-cta:hover { border-color: var(--text); }
