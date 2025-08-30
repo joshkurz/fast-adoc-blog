@@ -2,6 +2,7 @@ const el = document.getElementById("setup");
 const preview = document.getElementById("commentsPreview");
 
 const defaultCfg = {
+  theme: "light",
   commentsProvider: "off",
   giscus: { repo:"", repoId:"", category:"", categoryId:"", mapping:"pathname", theme:"light", lang:"en" },
   waline: { serverURL:"" }
@@ -13,10 +14,37 @@ let cfg = defaultCfg;
 fetch("/config.json", { cache: "no-store" })
   .then(r => r.ok ? r.json() : defaultCfg)
   .catch(() => defaultCfg)
-  .then(c => { cfg = { ...defaultCfg, ...c }; render(); });
+  .then(c => {
+    const incoming = { ...defaultCfg, ...c };
+    // Initialize theme from config.theme or fallback to giscus.theme, else default
+    incoming.theme = (c && (c.theme || (c.giscus && c.giscus.theme))) || defaultCfg.theme;
+    cfg = incoming;
+    // Apply immediately so the page matches initial selection
+    if (cfg.theme) document.body.setAttribute("data-theme", cfg.theme);
+    render();
+  });
 
 function render(){
   el.innerHTML = `
+    <fieldset>
+      <legend>Theme</legend>
+      <label for=\"themeSelect\">Site theme</label>
+      <select id=\"themeSelect\">${[
+        "light",
+        "light_high_contrast",
+        "light_tritanopia",
+        "preferred_color_scheme",
+        "dark",
+        "dark_dimmed",
+        "dark_high_contrast",
+        "dark_tritanopia",
+        "transparent_dark",
+        "noborder_dark",
+        "dark_no_border",
+        "nolanlawson"
+      ].map(t => `<option value=\"${t}\" ${cfg.theme===t?"selected":""}>${t}</option>`).join("")}</select>
+    </fieldset>
+
     <fieldset>
       <legend>Comments Provider</legend>
       <label><input type="radio" name="p" value="off" ${cfg.commentsProvider==="off"?"checked":""}> Off</label>
@@ -65,6 +93,15 @@ function render(){
     });
   });
 
+  const themeSelect = document.getElementById("themeSelect");
+  if (themeSelect) {
+    themeSelect.addEventListener("change", () => {
+      cfg.theme = themeSelect.value;
+      document.body.setAttribute("data-theme", cfg.theme);
+      showPreview();
+    });
+  }
+
   document.getElementById("saveLocal").onclick = () => {
     localStorage.setItem("asciBlogConfig", JSON.stringify(cfg));
     msg("Saved locally (preview mode). Use Save to repo to persist.");
@@ -86,6 +123,9 @@ function msg(t){ document.getElementById("status").textContent = t; }
 
 function showPreview(){
   preview.innerHTML = "";
+  if (cfg.theme) {
+    document.body.setAttribute("data-theme", cfg.theme);
+  }
   if (cfg.commentsProvider === "giscus" && cfg.giscus.repo) {
     const s = document.createElement("script");
     s.src = "https://giscus.app/client.js";
@@ -98,7 +138,7 @@ function showPreview(){
     s.setAttribute("data-mapping", cfg.giscus.mapping || "pathname");
     s.setAttribute("data-input-position","bottom");
     s.setAttribute("data-reactions-enabled","1");
-    s.setAttribute("data-theme", cfg.giscus.theme || "light");
+    s.setAttribute("data-theme", cfg.theme || cfg.giscus.theme || "light");
     s.setAttribute("data-lang", cfg.giscus.lang || "en");
     preview.appendChild(s);
   } else if (cfg.commentsProvider === "waline" && cfg.waline.serverURL) {
