@@ -15,6 +15,12 @@ body {
 }
 .wrap { max-width: 960px; margin: 0 auto; padding: 1.25rem; }
 header h1 a { text-decoration: none; color: inherit; }
+.site-header { border-bottom: 1px solid var(--border); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.brand { font-weight: 700; text-decoration: none; color: inherit; font-size: 1.15rem; }
+.site-nav { display: flex; gap: .5rem; }
+.site-nav a { text-decoration: none; color: inherit; padding: .35rem .6rem; border-radius: 999px; border: 1px solid transparent; }
+.site-nav a:hover { border-color: var(--border); }
 .post h1 { margin-bottom: 0; }
 .meta { color: var(--muted); margin-top: .25rem; }
 .post-cover { width: 100%; max-height: 360px; object-fit: cover; border-radius: 8px; margin: 0 0 .75rem; display: block; }
