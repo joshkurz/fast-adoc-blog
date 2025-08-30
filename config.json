@@ -1,4 +1,5 @@
 {
+  "theme": "transparent_dark",
   "commentsProvider": "giscus",
   "giscus": {
     "repo": "joshkurz/fast-adoc-blog",
