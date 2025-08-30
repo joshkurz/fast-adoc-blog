@@ -1,0 +1,23 @@
+= AsciiDoc Adventures: The Sequel
+:page-layout: post.njk
+:author: Doc Tester
+:github: hubot
+:image: https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&q=80&auto=format&fit=crop
+:description: A fresh post to verify that comments are scoped per‑page.
+:page-tags: testing, comments
+
+Welcome back to our brave world of structured text.
+
+== Purpose
+
+This post exists to prove comments are unique per page when using giscus mapping by pathname. Try leaving a comment here — it should not appear on other posts.
+
+== Checklist
+
+* Navigate to the home page and click this post.
+* Leave a comment here.
+* Visit the other post; your comment should not show up there.
+
+== Bonus
+
+Add your own posts with attributes at the top to customize author, image, description, and tags.
