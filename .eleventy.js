@@ -4,6 +4,35 @@ import path from "node:path";
 
 /** @type {import("@11ty/eleventy/src/UserConfig")} */
 export default function (eleventyConfig) {
+  // Helper to parse top-of-file AsciiDoc attributes
+  function readAdocAttrs(data) {
+    try {
+      if (!data || !data.page || typeof data.page.inputPath !== "string") return null;
+      const input = data.page.inputPath;
+      if (!input.endsWith(".adoc")) return null;
+      const raw = fs.readFileSync(path.join(process.cwd(), input), "utf8");
+      const lines = raw.split(/\r?\n/);
+      const out = {};
+      for (let i = 0; i < Math.min(lines.length, 80); i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        // Stop once content begins (a paragraph under a blank line after attrs)
+        if (line && !line.startsWith(":") && !line.startsWith("=") && i > 0) break;
+        // Parse attribute lines like ":author: Jane Doe"
+        if (line.startsWith(":")) {
+          const m = line.match(/^:([^:]+):\s*(.*)$/);
+          if (m) {
+            const key = m[1].trim();
+            const val = m[2].trim();
+            out[key] = val;
+          }
+        }
+      }
+      return out;
+    } catch {
+      return null;
+    }
+  }
   // Simple HTML -> text excerpt filter
   eleventyConfig.addFilter("excerpt", function(content) {
     if (!content) return "";
@@ -49,6 +78,24 @@ export default function (eleventyConfig) {
         return "post.njk";
       }
       return data && data.layout;
+    },
+    author: (data) => {
+      if (data && data.author) return data.author;
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      return attrs?.author || attrs?.authors || data?.byline;
+    },
+    description: (data) => {
+      if (data && data.description) return data.description;
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      return attrs?.description || attrs?.summary || attrs?.abstract || data?.excerpt;
+    },
+    image: (data) => {
+      if (data && (data.image || data.cover || data.hero || data.thumbnail)) return data.image || data.cover || data.hero || data.thumbnail;
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      return attrs?.image || attrs?.cover || attrs?.hero || attrs?.thumbnail;
     }
   });
   eleventyConfig.addPlugin(pluginAsciiDoc, {
