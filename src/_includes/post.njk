@@ -9,10 +9,13 @@ layout: base.njk
   <p class="meta">{{ page.date | readableDate }}{% if content %} · {{ content | readingTime }}{% endif %}</p>
   {% if author %}
     {% set a = authors and authors[author] %}
+    {% set gh = a and (a.github or a.gh or a.githubUsername) %}
+    {% set avatarUrl = a and a.avatar or (gh and 'https://github.com/' ~ gh ~ '.png') %}
+    {% set profileUrl = a and a.url or (gh and 'https://github.com/' ~ gh) %}
     <div class="byline">
-      {% if a and a.avatar %}<img src="{{ a.avatar }}" alt="{{ author }}">{% endif %}
+      {% if avatarUrl %}<img src="{{ avatarUrl }}" alt="{{ author }}">{% endif %}
       <div class="who">
-        {% if a and a.url %}<a href="{{ a.url }}">{{ author }}</a>{% else %}{{ author }}{% endif %}
+        {% if profileUrl %}<a href="{{ profileUrl }}">{{ author }}</a>{% else %}{{ author }}{% endif %}
         {% if a and a.bio %}<small>{{ a.bio }}</small>{% endif %}
       </div>
     </div>
