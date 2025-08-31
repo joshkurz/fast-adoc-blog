@@ -158,6 +158,13 @@ export default function (eleventyConfig) {
       if (data) data._adocAttrs = attrs;
       return attrs?.image || attrs?.cover || attrs?.hero || attrs?.thumbnail;
     },
+    date: (data) => {
+      if (data && data.date) return data.date;
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      const raw = attrs && (attrs["page-date"] || attrs.date || attrs.published);
+      return raw ? new Date(raw) : data && data.date;
+    },
     github: (data) => {
       if (data && (data.github || data.gh || data.githubUsername)) return data.github || data.gh || data.githubUsername;
       const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
@@ -187,7 +194,10 @@ export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget("public");
   // Custom collection for AsciiDoc posts
   eleventyConfig.addCollection("adoc", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("src/posts/**/*.adoc");
+    return collectionApi
+      .getFilteredByGlob("src/posts/**/*.adoc")
+      .sort((a, b) => a.date - b.date)
+      .reverse(); // newest first
   });
 
   // Local-only API to read/write config.json when running `npm run dev`
