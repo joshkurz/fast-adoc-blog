@@ -10,7 +10,8 @@ export default function (eleventyConfig) {
       if (!data || !data.page || typeof data.page.inputPath !== "string") return null;
       const input = data.page.inputPath;
       if (!input.endsWith(".adoc")) return null;
-      const raw = fs.readFileSync(path.join(process.cwd(), input), "utf8");
+      const file = path.isAbsolute(input) ? input : path.join(process.cwd(), input);
+      const raw = fs.readFileSync(file, "utf8");
       const lines = raw.split(/\r?\n/);
       const out = {};
       for (let i = 0; i < Math.min(lines.length, 80); i++) {
@@ -158,6 +159,13 @@ export default function (eleventyConfig) {
       if (data) data._adocAttrs = attrs;
       return attrs?.image || attrs?.cover || attrs?.hero || attrs?.thumbnail;
     },
+    date: (data) => {
+      if (data && data.date) return data.date;
+      const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
+      if (data) data._adocAttrs = attrs;
+      const raw = attrs && (attrs["page-date"] || attrs.date || attrs.published);
+      return raw ? new Date(raw) : data && data.date;
+    },
     github: (data) => {
       if (data && (data.github || data.gh || data.githubUsername)) return data.github || data.gh || data.githubUsername;
       const attrs = (data && data._adocAttrs) || readAdocAttrs(data);
@@ -187,7 +195,19 @@ export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget("public");
   // Custom collection for AsciiDoc posts
   eleventyConfig.addCollection("adoc", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("src/posts/**/*.adoc");
+    return collectionApi
+      .getFilteredByGlob("src/posts/**/*.adoc")
+      .map(item => {
+        const attrs = readAdocAttrs(item.data) || {};
+        const time = Date.parse(
+          attrs['page-date'] || attrs.date || attrs.published || item.data.date || item.date
+        );
+        const d = new Date(time);
+        item.data.date = d;
+        item.date = d;
+        return item;
+      })
+      .sort((a, b) => b.date - a.date);
   });
 
   // Local-only API to read/write config.json when running `npm run dev`
