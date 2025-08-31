@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
+import pingHandler from '../api/ping.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -71,4 +72,27 @@ test('no server-only paths in generated HTML', async () => {
       assert.ok(!html.includes(needle), `Prod HTML should not include ${needle} (${file})`);
     }
   }
+});
+
+test('index lists posts newest first', () => {
+  const siteDir = resolve(__dirname, '..', '_site');
+  const indexHtml = readFileSync(resolve(siteDir, 'index.html'), 'utf8');
+  const matches = [...indexHtml.matchAll(/href="\/posts\/([^/\"]+)\/"/g)];
+  const slugs = [];
+  for (const m of matches) {
+    if (!slugs.includes(m[1])) slugs.push(m[1]);
+  }
+  assert.deepEqual(slugs, ['feature-tour', 'asciidoc-adventures', 'hello']);
+});
+
+test('ping serverless function returns ok', () => {
+  let statusCode;
+  let jsonBody;
+  const res = {
+    status(code) { statusCode = code; return this; },
+    json(body) { jsonBody = body; }
+  };
+  pingHandler({}, res);
+  assert.equal(statusCode, 200);
+  assert.deepEqual(jsonBody, { ok: true });
 });
