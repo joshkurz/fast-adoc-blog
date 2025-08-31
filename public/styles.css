@@ -25,6 +25,17 @@ header h1 a { text-decoration: none; color: inherit; }
 .post h1 { margin-bottom: 0; }
 .meta { color: var(--muted); margin-top: .25rem; }
 .post-cover { width: 100%; max-height: 360px; object-fit: cover; border-radius: 8px; margin: 0 0 .75rem; display: block; }
+.post img { max-width: 100%; height: auto; }
+.theme-btn {
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: .15rem .5rem;
+}
+.theme-btn:hover {
+  border-color: var(--text);
+}
 .post-list { list-style: none; padding: 0; }
 .post-list li { margin: .5rem 0; }
 fieldset { border: 1px solid var(--border); }
