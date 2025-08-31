@@ -1,0 +1,135 @@
+= Framework Feature Tour
+:page-layout: post.njk
+:toc:
+:author: Josh Kurz
+:github: joshkurz
+:image: https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80&auto=format&fit=crop
+:description: An in-depth walkthrough demonstrating every core feature of fast-adoc-blog with hands-on examples.
+:page-tags: features, guide
+
+Welcome to the feature tour. This post demonstrates the goodies available when writing in fast-adoc-blog.
+
+== AsciiDoc Basics
+
+Inline formatting like *bold*, _italic_, and `mono` works out of the box. Attributes at the top control metadata and layout.
+
+== Lists & Tables
+
+. Ordered list item
+.. Nested item
+
+* Unordered list
+* Another item
+
+[cols="1,1",options="header"]
+|===
+|Column A |Column B
+|A1 |B1
+|A2 |B2
+|===
+
+== Code Blocks & Callouts
+
+[source,js]
+----
+function hello(name) {
+  return `Hello, ${name}`; // <1>
+}
+----
+<1> Callouts annotate lines of code.
+
+== Admonitions
+
+[NOTE]
+====
+Use built-in admonitions for tips and warnings.
+====
+
+[TIP]
+====
+Mix multiple admonition types to draw attention to key information.
+====
+
+== Images
+
+image::https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80&auto=format&fit=crop[Alt text,width=100%]
+
+== Custom Scripts & APIs
+
+This demo fetches a serverless function using a custom script.
+
+[source,js]
+----
+// api/ping.js
+export default () =>
+  new Response(JSON.stringify({ ok: true }), {
+    headers: { "content-type": "application/json" }
+  });
+----
+
+++++
+<div id="ping-area">
+  <button id="ping-btn">Ping serverless</button>
+  <pre id="ping-result"></pre>
+</div>
+<script type="module" src="/js/ping-demo.js"></script>
+++++
+
+== Theme Options
+
+CSS variables are mapped to giscus theme names. Click a theme to preview it locally—the giscus widget follows suit. Set `theme` in `config.json` to persist a choice.
+
+|===
+|CSS `data-theme` | Matches giscus theme
+
+|+++<button class="theme-btn" data-theme="light">light</button>+++ |`light`
+|+++<button class="theme-btn" data-theme="light_high_contrast">light_high_contrast</button>+++ |`light_high_contrast`
+|+++<button class="theme-btn" data-theme="dark">dark</button>+++ |`dark`
+|+++<button class="theme-btn" data-theme="dark_dimmed">dark_dimmed</button>+++ |`dark_dimmed`
+|+++<button class="theme-btn" data-theme="noborder_dark">noborder_dark</button>+++ |`noborder_dark`
+|+++<button class="theme-btn" data-theme="preferred_color_scheme">preferred_color_scheme</button>+++ |Follows OS preference
+|===
+
++++
+<script type="module" src="/js/theme-demo.js"></script>
++++
+
+== Feature Summary
+
+[options="header"]
+|===
+|Feature |What it shows
+|Responsive images |`image::` macros stretch to fit the container
+|Live theme preview |Buttons swap CSS and giscus themes
+|Serverless ping demo |JS fetches `/api/ping` and prints JSON
+|Comments |Each post maps to a giscus discussion
+|===
+
+== Simple Config
+
+Configuration lives in a single JSON file:
+
+[source,json]
+----
+{
+  "theme": "transparent_dark",
+  "commentsProvider": "giscus",
+  "giscus": {
+    "mapping": "pathname",
+    "theme": "noborder_dark"
+  }
+}
+----
+
+== Deploy & License
+
+Push to GitHub and Vercel builds the site instantly. The project ships under the MIT license—fork freely.
+
+== Wrap Up
+
+That's a quick run-through of what this framework offers. Happy writing!
+
+== Comments
+
+The giscus widget below maps each post to a matching GitHub discussion. Join the conversation!
+

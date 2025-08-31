@@ -187,7 +187,9 @@ export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget("public");
   // Custom collection for AsciiDoc posts
   eleventyConfig.addCollection("adoc", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("src/posts/**/*.adoc");
+    return collectionApi
+      .getFilteredByGlob("src/posts/**/*.adoc")
+      .sort((a, b) => b.date - a.date);
   });
 
   // Local-only API to read/write config.json when running `npm run dev`
