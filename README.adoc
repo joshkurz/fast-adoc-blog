@@ -51,6 +51,28 @@ Run the site and visit http://localhost:8080/setup. Fill in the form and commit 
 +
 Push to GitHub. Connect the repo on Vercel with build command `npm run build` and output `_site/`—your blog is live.
 
+== Themes
+
+The blog's look and feel is bundled as a *theme*. The default theme is `moonstomp`, a playful nod to the first steps on the moon, and lives in `themes/moonstomp`.
+
+To use a different theme, install it and set the `theme` field in `config.json`:
+
+----
+npm install my-cool-theme
+echo '{"theme": "my-cool-theme"}' > config.json
+----
+
+You can also craft a theme locally:
+
+----
+mkdir -p themes/my-theme/{_includes,public}
+echo 'body { background: pink; }' > themes/my-theme/public/styles.css
+echo '{"theme": "my-theme"}' > config.json
+----
+
+Each theme may supply Nunjucks layouts in `_includes/` and static assets in `public/`.
+Include a `giscus.css` file in `public/` to theme the giscus comment widget.
+
 == License
 
 MIT — fork and remix freely.

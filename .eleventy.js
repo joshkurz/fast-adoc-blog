@@ -2,8 +2,27 @@ import pluginAsciiDoc from "eleventy-plugin-asciidoc";
 import fs from "node:fs";
 import path from "node:path";
 
+// Determine active theme from config.json (defaults to "moonstomp")
+let themeName = "moonstomp";
+try {
+  const cfg = JSON.parse(fs.readFileSync("config.json", "utf8"));
+  if (cfg && cfg.theme) themeName = cfg.theme;
+} catch {}
+let themeDir = path.join("themes", themeName);
+if (!fs.existsSync(themeDir)) {
+  themeDir = path.join("node_modules", themeName);
+}
+
+// Flag if current theme supplies a custom giscus stylesheet
+const themeHasGiscusCss = fs.existsSync(path.join(themeDir, "public", "giscus.css"));
+
 /** @type {import("@11ty/eleventy/src/UserConfig")} */
 export default function (eleventyConfig) {
+  eleventyConfig.addGlobalData("activeTheme", {
+    name: themeName,
+    hasGiscusCss: themeHasGiscusCss
+  });
+
   // Helper to parse top-of-file AsciiDoc attributes
   function readAdocAttrs(data) {
     try {
@@ -115,7 +134,9 @@ export default function (eleventyConfig) {
   const assetHelper = function(filePath) {
     try {
       const rel = String(filePath || "").replace(/^\//, "");
-      const abs = path.join(process.cwd(), "public", rel);
+      const themeAbs = path.join(process.cwd(), themeDir, "public", rel);
+      const rootAbs = path.join(process.cwd(), "public", rel);
+      const abs = fs.existsSync(themeAbs) ? themeAbs : rootAbs;
       const stat = fs.statSync(abs);
       const v = stat.mtime.getTime();
       return `/${rel}?v=${v}`;
@@ -192,7 +213,9 @@ export default function (eleventyConfig) {
     extensions: [".adoc"]
   });
   eleventyConfig.addPassthroughCopy({ "public": "/" });
+  eleventyConfig.addPassthroughCopy({ [path.join(themeDir, "public")]: "/" });
   eleventyConfig.addWatchTarget("public");
+  eleventyConfig.addWatchTarget(path.join(themeDir, "public"));
   // Custom collection for AsciiDoc posts
   eleventyConfig.addCollection("adoc", function(collectionApi) {
     return collectionApi
@@ -263,7 +286,7 @@ export default function (eleventyConfig) {
     });
   }
   return {
-    dir: { input: "src", includes: "_includes", output: "_site" },
+    dir: { input: "src", includes: `../${themeDir}/_includes`, output: "_site" },
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
     dataTemplateEngine: "njk",
