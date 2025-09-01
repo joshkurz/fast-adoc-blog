@@ -3,15 +3,15 @@ import fs from "node:fs";
 export default (() => {
   try {
     const raw = JSON.parse(fs.readFileSync("config.json", "utf8"));
-    // Normalize a top-level theme for templates to use consistently
+    // Ensure a theme name is available for templates
     if (!raw.theme) {
-      raw.theme = (raw.giscus && raw.giscus.theme) || "light";
+      raw.theme = "moonstomp";
     }
     return raw;
   } catch {
     return {
       commentsProvider: "off",        // "off" | "giscus" | "waline"
-      theme: "light",
+      theme: "moonstomp",
       giscus: {
         repo: "",
         repoId: "",
