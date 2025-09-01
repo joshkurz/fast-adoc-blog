@@ -1,291 +1,56 @@
 = fast-adoc-blog ⚡
-
 :icons: font
 :sectanchors:
 :source-highlighter: rouge
 
-....
-    _
-     /^\
-    /___\
-   |=   =|
-   |     |
-   |     |
-   |     |
-   |     |
-   |     |
-  /|##!##|\
-   / |##!##| \
-  /  |##!##|  \
- |  / ^ | ^ \  |
- | /  ( | )  \ |
- |/   ( | )   \|
-   ((   ))
-  ((  :  ))
-  ((  :  ))
-   ((   ))
-    (( ))
-     ( )
-    .
-    .
-    .
-  fast-adoc-blog 🚀
-....
+A zero-config AsciiDoc blog that deploys to Vercel in minutes.
 
-A fast, zero-config blogging kit for https://asciidoc.org[AsciiDoc] lovers.
-Write in `.adoc` → push to GitHub → auto-deploy on https://vercel.com[Vercel].
-Includes an interactive `/setup` page (local dev only) to enable comments (giscus or Waline) and add future JavaScript features with ease.
+== Features at a Glance
 
-toc::[]
+[options="header"]
+|===
+|Feature|Summary
+|AsciiDoc posts|Write blog posts in `.adoc` files
+|Zero-config deploy|Push to GitHub and Vercel builds automatically
+|Interactive setup|Local `/setup` configures comments and options
+|Comments|Use giscus or Waline out of the box
+|Extensible|Add JS in `public/js` or serverless functions in `api/`
+|===
 
-== ✨ Features
+For a full walkthrough of every feature, see the link:src/posts/feature-tour.adoc[feature tour blog post].
 
-* 📝 *AsciiDoc-first*: write posts in `.adoc`.
-* ⚡ *Instant deploys*: optimized for Vercel + GitHub.
-* 💬 *Built-in comments*: choose *giscus* (no backend) or *Waline* (social login) via `/setup`.
-* 🔌 *Custom JS ready*: drop scripts in `/public/js` or create Vercel Functions in `/api`.
-* 🧩 *Simple config*: one `config.json` written from the Setup UI.
-* 🚀 *MIT-licensed*: fork, remix, share freely.
+== Quick Start (under 5 min)
 
-== 🚀 Quick Start
-
-Follow these steps to run the site locally and deploy to Vercel.
-
-. 1 — Install dependencies
-
-  ```bash
-  npm install
-  ```
-
-. 2 — Start the development server (live reload)
-
-  ```bash
-  npm run dev
-  ```
-
-  By default Eleventy serves the site at http://localhost:8080 — the port is printed in the terminal.
-
-. 3 — Build for production
-
-  ```bash
-  npm run build
-  ```
-
-  The static output is written to the `_site/` directory (the value used in `vercel.json`).
-
-. 4 — Clean build output
-
-  ```bash
-  npm run clean
-  ```
-
-. 5 — Write a post
-
-  Add `.adoc` files to `src/posts/` (example: `src/posts/hello.adoc`). Eleventy + Asciidoctor will render them to `_site/posts/`.
-
-. 6 — Configure comments (optional)
-
-  While running locally, visit `http://localhost:8080/setup` and choose **giscus** or **Waline**. The `/setup` page and the “Setup” nav link are available only in local dev. To save the generated `config.json` back to your repo from the Setup UI you’ll need environment variables (see notes below), otherwise copy the JSON and commit it.
-
-. 7 — Deploy to Vercel
-
-  - Connect your repository on https://vercel.com and set the build command to `npm run build` and the output directory to `_site`.
-
-[NOTE]
-====
-About `/setup`:
-
-* The `/setup` page is generated only in local dev (when running `npm run dev`). It does not exist on the deployed site.
-* To save `config.json` back to your repository from the Setup UI, set environment variables (in Vercel or your local shell):
-** `VERCEL_GITHUB_TOKEN` — a personal access token with `repo` scope
-** `GITHUB_REPO` — your repo slug, e.g., `youruser/fast-adoc-blog`
-* Without these, Setup still works in preview mode (stores config in `localStorage`). Copy the JSON it shows and commit it as `config.json` at the repo root.
-====
-
-== 💬 Comments Options
-
-* *giscus* → GitHub Discussions, no backend required.
-* *Waline* → Serverless backend (Vercel deploy), supports Google/GitHub/Twitter/Facebook logins.
-
-You can switch anytime using `/setup` locally, or by editing `config.json`.
-
-=== Enabling giscus (GitHub Discussions)
-
-To see giscus comments on posts:
-
-. Ensure your post uses the post layout so the comments block renders. At the top of each `.adoc` post include:
-  [source,adoc]
-  ----
-  = My Post Title
-  :page-layout: post.njk
-  ----
-. Enable Discussions on your GitHub repository.
-. Visit https://giscus.app and select your repo and a Discussions category. Copy the full script snippet they generate (the `<script src="https://giscus.app/client.js" ...></script>` block) and paste it into the local `/setup` page — it will parse and fill the required fields automatically.
-. Update `config.json` (automatically via Setup or manually) with:
-  - `commentsProvider`: `"giscus"`
-  - `giscus.repo`, `giscus.repoId`, `giscus.category`, `giscus.categoryId` (and optional `mapping`, `theme`, `lang`).
-. Build/run the site and open any post; the giscus widget appears at the bottom.
-
-Common gotchas:
-
-- If you paste an incomplete snippet (missing `src` or data attributes), no widget appears.
-- Category must exist in Discussions and be accessible publicly for public sites.
-- Ad blockers or third‑party script restrictions can hide the embed; check your browser console for errors.
-
-=== Enabling Waline
-
-- Deploy a Waline server (for example on Vercel) and copy its public URL.
-- In `config.json`, set `commentsProvider` to `"waline"` and set `waline.serverURL` to your deployed URL.
-- Build/run and open any post to see the Waline widget.
-
-== 🛠 Adding Custom Features
-
-=== Client-only JS
-
-Place files in `/public/js/` and reference them in `base.njk`:
-
-[source,html]
+. Fork this repo and clone your copy
++
 ----
-<script src="/js/feature.js" defer></script>
+git clone https://github.com/YOUR_USER/fast-adoc-blog.git
+cd fast-adoc-blog
+npm install
 ----
-
-*Example: a tiny pageview counter using `localStorage`*:
-
-[source,javascript]
+. Start the local dev server
++
 ----
-// public/js/feature.js
-(() => {
-  const k = "pageviews:" + location.pathname;
-  const n = (parseInt(localStorage.getItem(k), 10) || 0) + 1;
-  localStorage.setItem(k, n);
-  const el = document.querySelector("[data-pageviews]");
-  if (el) el.textContent = n.toString();
-})();
+npm run dev
 ----
-
-In a template:
-
-[source,html]
+Open http://localhost:8080.
+. Write your first post
++
 ----
-<span data-pageviews>0</span> views
-----
-
-=== Vercel Functions (serverless)
-
-Add files in `/api/` — they deploy as endpoints automatically:
-
-[source,javascript]
-----
-// api/ping.js
-export default () =>
-  new Response(JSON.stringify({ ok: true }), {
-    headers: { "content-type": "application/json" }
-  });
-----
-
-Client call:
-
-[source,javascript]
-----
-fetch("/api/ping").then(r => r.json()).then(console.log);
-----
-
-=== Edge Functions (low latency)
-
-[source,javascript]
-----
-export const config = { runtime: "edge" };
-
-export default async function handler(req) {
-  const url = new URL(req.url);
-  const name = url.searchParams.get("name") || "world";
-  return new Response(`hello, ${name}`, {
-    headers: { "content-type": "text/plain" }
-  });
-}
-----
-
-== 🗂 Project Structure
-
-[source,text]
-----
-fast-adoc-blog/
-├─ src/
-│  ├─ posts/        # your .adoc posts
-│  ├─ _includes/    # templates (base, post, comments, setup)
-│  └─ index.njk     # homepage
-├─ public/          # static assets (css, js)
-├─ api/             # optional serverless/edge functions
-├─ config.json      # generated by /setup (comments config)
-├─ .eleventy.js     # 11ty + AsciiDoc config
-├─ package.json
-└─ vercel.json
-----
-
-== 🔧 Configuration (generated)
-
-The interactive `/setup` page writes a small `config.json`:
-
-[source,json]
-----
-{
-  "commentsProvider": "giscus",
-  "giscus": {
-    "repo": "",
-    "repoId": "",
-    "category": "",
-    "categoryId": "",
-    "mapping": "pathname",
-    "theme": "light",
-    "lang": "en"
-  },
-  "waline": {
-    "serverURL": ""
-  }
-}
-----
-
-[TIP]
-====
-You can keep `commentsProvider` set to `off` to disable comments entirely.
-====
-
-== 🧪 Demo Post: `src/posts/hello.adoc`
-
-[source,adoc]
-----
-= Hello, AsciiDoc
+cat <<'POST' > src/posts/hello.adoc
+= Hello
 :page-layout: post.njk
-:toc:
 
-This is an `.adoc` post rendered by 11ty via Asciidoctor.
-
-== Why AsciiDoc?
-
-* Rich semantics and attributes
-* Includes, macros, and callouts
-* Plays great with CI/CD
-
-toc::[]
+My first post!
+POST
 ----
+. Configure comments and theme
++
+Run the site and visit http://localhost:8080/setup. Fill in the form and commit the generated `config.json`.
+. Deploy
++
+Push to GitHub. Connect the repo on Vercel with build command `npm run build` and output `_site/`—your blog is live.
 
-== 📦 Scripts
+== License
 
-[source,json]
-----
-{
-  "scripts": {
-    "dev": "ELEVENTY_ENV=development npx @11ty/eleventy --serve",
-    "build": "npx @11ty/eleventy",
-    "clean": "rm -rf _site"
-  }
-}
-----
-
-== 📜 License
-
-MIT — use, share, remix freely. Contributions welcome via PRs & Issues.
-
-== ❤️ Credits
-
-Built with AsciiDoc, Eleventy, and Vercel.
+MIT — fork and remix freely.
